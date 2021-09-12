@@ -1,10 +1,16 @@
 <?php
 
-use App\Http\Controllers\admin\BrandController;
-use App\Http\Controllers\admin\CategoryController;
-use App\Http\Controllers\admin\SubCategoryController;
-use App\Http\Controllers\admin\VehicleController;
+use App\Http\Controllers\admin\ContactUsController;
+use App\Http\Controllers\admin\CourseController;
+use App\Http\Controllers\admin\HomeController;
+use App\Http\Controllers\admin\PersonalConsultancyController;
+use App\Http\Controllers\admin\SettingController;
+use App\Http\Controllers\admin\StockAnalysisController;
+use App\Http\Controllers\admin\TermsAndConditionController;
+use App\Http\Controllers\admin\WhoAreWeController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,17 +24,38 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('brand.index');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
+    Route::resource('home',HomeController::class);
+    Route::resource('who-are-we',WhoAreWeController::class);
+
+    Route::resource('personal-consultancy',PersonalConsultancyController::class);
+
+    Route::resource('course',CourseController::class);
+
+    Route::resource('stock-analysis',StockAnalysisController::class);
+    Route::resource('contact-us',ContactUsController::class);
+
+    Route::resource('terms-and-conditions',TermsAndConditionController::class);
+
+
+    Route::get('setting',[SettingController::class,'index'])->name('setting.index');
+    Route::post('setting',[SettingController::class,'update'])->name('setting.update');
+
 });
 
 
-Route::resource('vehicle',VehicleController::class);
-
-Route::resource('brand',BrandController::class);
-
-Route::resource('category',CategoryController::class);
-
-Route::resource('sub-category',SubCategoryController::class);
-
-
-Route::get('get-sub-category/{id}',[VehicleController::class,'getSubCategory']);
+require __DIR__.'/auth.php';

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-<title> Vehicle Management System | @yield('title')</title>
+<title> {{ $setting->system_name }} | @yield('title')</title>
 
 {{-- include the links --}}
 
@@ -82,7 +82,7 @@
     <div id="left-sidebar" class="sidebar">
         <div class="navbar-brand">
             {{-- <a href="#"><img src="{{asset('public/uploads/'.$setting->favicon)}}" alt="Logo" class="img-fluid logo"> --}}
-            <span>Vehicle Management System </span></a>
+            <span>{{ $setting->system_name }}</span></a>
             <button type="button" class="btn-toggle-offcanvas btn btn-sm float-right"><i class="lnr lnr-menu icon-close"></i></button>
         </div>
         <div class="sidebar-scroll">
